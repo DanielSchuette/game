@@ -2,6 +2,7 @@
 #include <string.h>
 #include "game.h"
 #include "hashmap.h"
+#include "utils.h"
 
 /* FIXME: is this hashing function any good? */
 unsigned int hash(const char *s)
@@ -18,8 +19,17 @@ unsigned int hash(const char *s)
     return sum % MAPSIZE;
 }
 
+/* init_map: initialize map points to NULL. */
+void init_map(hashmap_t *map)
+{
+    int i;
+
+    for (i = 0; i < MAPSIZE; i++)
+        (*map)[i] = NULL;
+}
+
 /* add_texture_to_map: make sure to only use texture here. */
-void add_texture_to_map(hashmap_t map, void *texture)
+void add_texture_to_map(hashmap_t *map, void *texture)
 {
     unsigned int h;
     texture_t *tex;
@@ -27,8 +37,12 @@ void add_texture_to_map(hashmap_t map, void *texture)
 
     tex = (texture_t *)texture;
     h = hash(tex->name);
+#ifdef DEBUG
+    warn("adding %s (%d) texture", tex->name, h);
+#endif
     node = (node_t *)malloc(sizeof(node_t));
-    map[h] = add_node(map[h], node);
+    node->data = texture;
+    (*map)[h] = add_node((*map)[h], node);
 }
 
 /*

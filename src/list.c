@@ -1,6 +1,7 @@
 /* list.c: a singly-linked list implementation. */
 #include <stdlib.h>
 #include "list.h"
+#include "utils.h"
 
 node_t *add_node(node_t *head, node_t *new)
 {

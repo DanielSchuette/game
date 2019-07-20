@@ -41,7 +41,8 @@ void add_texture(game_t *game, const char *path, const char *name,
 void append_texture(game_t *g, texture_t *t)
 {
     g->num_textures++;
-    add_texture_to_map(*(g->textures), (void *)t);
+    printf("added %d\n", g->num_textures);
+    add_texture_to_map(g->textures, (void *)t);
 }
 
 void render_all_textures(game_t *g)
@@ -54,7 +55,7 @@ void render_all_textures(game_t *g)
     for (i = 0; i < MAPSIZE; i++) {
         head = (*g->textures)[i];
         for (node = head; node != NULL; node = node->next) {
-            tex = (texture_t *)node->data;
+            tex = (texture_t *)(node->data);
             SDL_RenderCopy(g->renderer, tex->tex, tex->src, tex->dest);
         }
     }
@@ -62,7 +63,18 @@ void render_all_textures(game_t *g)
 
 void render_texture(game_t *g, const char *name)
 {
+    unsigned int h;
+    node_t *head;
+    node_t *node;
+    texture_t *tex;
 
+    h = hash(name);
+    head = (*g->textures)[h];
+    for (node = head; node != NULL; node = node->next) {
+        tex = (texture_t *)(node->data);
+        if (!strcmp(tex->name, name))
+            SDL_RenderCopy(g->renderer, tex->tex, tex->src, tex->dest);
+    }
 }
 
 void free_textures(game_t *g)

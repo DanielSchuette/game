@@ -8,6 +8,7 @@
 typedef node_t *hashmap_t[MAPSIZE];
 
 unsigned int hash(const char *);
-void add_texture_to_map(hashmap_t, void *);
+void init_map(hashmap_t *);
+void add_texture_to_map(hashmap_t *, void *);
 
 #endif /*_HASHMAP_H_ */

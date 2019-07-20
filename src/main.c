@@ -17,9 +17,7 @@ int main(int argc, char **argv)
         start = SDL_GetTicks();
         handle_events(game);
         update(game);
-        printf("initialized\n");
         render(game);
-        printf("rendered\n");
         end = SDL_GetTicks();
         adjust_framerate(game, start, end);
     }

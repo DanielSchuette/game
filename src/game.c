@@ -32,6 +32,7 @@ game_t *init_game(const char *title, int x_pos, int y_pos,
     }
 
     hm = (hashmap_t *)malloc(sizeof(hashmap_t));
+    init_map(hm);
 
     /* initialize game state */
     g->active = true;
@@ -63,13 +64,12 @@ void render(game_t *game)
     SDL_RenderClear(game->renderer);
 
     /* render textures to the screen */
-    render_all_textures(game);
+    // render_all_textures(game);
     render_texture(game, "bearded_man");
 
     /* render to the screen */
     SDL_RenderPresent(game->renderer);
 }
-
 
 /* handle_events: handle only events on the queue. */
 void handle_events(game_t *game)
