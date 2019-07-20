@@ -3,6 +3,7 @@
 CONFIG =
 override CONFIG += -DENABLE_ESC_QUIT # quit with escape
 override CONFIG += -DDEBUG # enable debug mode
+override CONFIG += # -DREPORT_FPS # report framerate
 
 # compilation flags and sources
 CFLAGS      = -O3 -Wall

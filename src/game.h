@@ -16,8 +16,6 @@
 typedef struct texture_t {
     SDL_Texture *tex;   /* the actual SDL texture */
     const char *name;   /* should be a unique identifier */
-    SDL_Rect *src;      /* rendering source rectangle */
-    SDL_Rect *dest;     /* rendering destination rectangle */
 } texture_t;
 
 typedef struct game_t {
@@ -29,8 +27,8 @@ typedef struct game_t {
     int framerate;
 } game_t;
 
-game_t *init_game(const char *, int, int, int, int, bool);
-void load_assets(game_t *, const char *);
+game_t *init_game(const char *, int, int, int, int, bool, unsigned int);
+void load_assets(game_t *, const char *, const char *);
 void handle_events(game_t *);
 void quit_game(game_t *);
 bool is_active(game_t *);

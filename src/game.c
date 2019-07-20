@@ -3,9 +3,11 @@
 #include "texture.h"
 #include "utils.h"
 
+bool llama_up = true;
+
 /* init_game: create a new game. */
 game_t *init_game(const char *title, int x_pos, int y_pos,
-                 int width, int height, bool fullscreen)
+                 int width, int height, bool fullscreen, unsigned int framerate)
 {
     int flags;
     SDL_Window *w;
@@ -14,20 +16,20 @@ game_t *init_game(const char *title, int x_pos, int y_pos,
     hashmap_t *hm;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) /* SDL_INIT_EVERYTHING ? */
-        fail("failed to initialize SDL: %s", SDL_GetError());
+        fail("%s (%d): failed to initialize SDL: %s", ORIGIN, SDL_GetError());
 
     flags = SDL_WINDOW_SHOWN;
     if (fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     w = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);
-    if (!w) fail("failed to create window");
+    if (!w) fail("%s (%d): failed to create window", ORIGIN);
 
     r = SDL_CreateRenderer(w, -1, 0);
-    if (!r) fail("failed to create renderer");
+    if (!r) fail("%s (%d): failed to create renderer", ORIGIN);
     SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
 
     g = (game_t *)malloc(sizeof(game_t));
     if (!g) {
-        fail("failed to allocate game");
+        fail("%s (%d): failed to allocate game", ORIGIN);
         return NULL; /* never reached */
     }
 
@@ -40,15 +42,15 @@ game_t *init_game(const char *title, int x_pos, int y_pos,
     g->window = w;
     g->textures = hm;
     g->num_textures = 0;
-    g->framerate = 60;
+    g->framerate = framerate;
 
     return g;
 }
 
 /* TODO: load assets from an asset table and initialize them */
-void load_assets(game_t *g, const char *table)
+void load_assets(game_t *g, const char *table, const char *name)
 {
-    add_texture(g, table, "bearded_man", 128, 128, NULL);
+    add_texture(g, table, name);
 }
 
 /* update: update the game. */
@@ -60,18 +62,55 @@ void update(game_t *game)
 /* render: render the game. */
 void render(game_t *game)
 {
+    static int frame = 1;
+    SDL_Rect src, dest;
+
     /* clear the screen */
     SDL_RenderClear(game->renderer);
 
     /* render textures to the screen */
-    // render_all_textures(game);
-    render_texture(game, "bearded_man");
+    switch (frame++) {
+    case 5:
+        src.x = 1;
+        src.y = 2;
+        break;
+    case 4:
+        src.x = 0;
+        src.y = 2;
+        break;
+    case 3:
+        src.x = 1;
+        src.y = 1;
+        break;
+    case 2:
+        src.x = 0;
+        src.y = 1;
+        break;
+    case 1:
+        src.x = 1;
+        src.y = 0;
+        break;
+    case 0:
+        src.x = src.y = 0;
+        break;
+    }
+    frame %= 6;
+
+    src.x *= 48;
+    src.y *= 48;
+    src.w = src.h = 48;
+
+    dest.x = WIDTH/2-24;
+    dest.y = HEIGHT/2-24;
+    dest.w = dest.h = 48;
+
+    render_texture(game, "llama", &src, &dest);
 
     /* render to the screen */
     SDL_RenderPresent(game->renderer);
 }
 
-/* handle_events: handle only events on the queue. */
+/* handle_events: handle all events on the queue. */
 void handle_events(game_t *game)
 {
     SDL_Event e;
@@ -88,6 +127,8 @@ void handle_events(game_t *game)
                 game->active = false;
 #endif
                 break;
+            case SDLK_UP:
+                llama_up = true;
             default:
                 break;
             }
@@ -123,4 +164,8 @@ void adjust_framerate(game_t *g, unsigned int start, unsigned int end)
     diff = end - start;
     if (diff < time)
         SDL_Delay(time-diff);
+#ifdef REPORT_FPS
+    float fps = 1000/(diff+1); /* avoid floating point exceptions */
+    debug_log("%s (%d): framerate %.3f", ORIGIN, fps);
+#endif
 }

@@ -37,9 +37,7 @@ void add_texture_to_map(hashmap_t *map, void *texture)
 
     tex = (texture_t *)texture;
     h = hash(tex->name);
-#ifdef DEBUG
-    warn("adding %s (%d) texture", tex->name, h);
-#endif
+    debug_log("%s (%d): adding %s (%d) texture", ORIGIN, tex->name, h);
     node = (node_t *)malloc(sizeof(node_t));
     node->data = texture;
     (*map)[h] = add_node((*map)[h], node);

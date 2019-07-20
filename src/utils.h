@@ -24,8 +24,12 @@
 # define ANSI_WHITE   ""
 #endif
 
-void leave(int);
+#define STRINGIFY(x) #x
+#define ORIGIN __FILE__, __LINE__
+
 void fail(const char *, ...);
 void warn(const char *, ...);
+void debug_log(const char *, ...);
+void leave(int);
 
 #endif /* _UTILS_H_ */

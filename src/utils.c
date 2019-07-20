@@ -7,11 +7,6 @@
 
 extern char *progname;
 
-void leave(int status)
-{
-    exit(status);
-}
-
 void warn(const char *fmt, ...)
 {
     va_list ap;
@@ -21,7 +16,8 @@ void warn(const char *fmt, ...)
     vsnprintf(buf, BUFSIZ-1, fmt, ap);
     va_end(ap);
 
-    fprintf(stderr, "%s: %swarning%s: %s.\n", progname, ANSI_YELLOW, ANSI_RESET, buf);
+    fprintf(stderr, "%s: %swarning%s: %s.\n",
+            progname, ANSI_YELLOW, ANSI_RESET, buf);
 }
 
 void fail(const char *fmt, ...)
@@ -36,4 +32,24 @@ void fail(const char *fmt, ...)
     fprintf(stderr, "%s: %serror%s: %s.\n",
             progname, ANSI_RED, ANSI_RESET, buf);
     leave(EXIT_FAILURE);
+}
+
+void debug_log(const char *fmt, ...)
+{
+#ifdef DEBUG
+    va_list ap;
+    char buf[BUFSIZ];
+
+    va_start(ap, fmt);
+    vsnprintf(buf, BUFSIZ-1, fmt, ap);
+    va_end(ap);
+
+    fprintf(stderr, "%s: %slog%s: %s.\n",
+            progname, ANSI_YELLOW, ANSI_RESET, buf);
+#endif
+}
+
+void leave(int status)
+{
+    exit(status);
 }

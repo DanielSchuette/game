@@ -11,8 +11,8 @@ int main(int argc, char **argv)
 
     /* game loop */
     game = init_game("SDL2 game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                     WIDTH, HEIGHT, false);
-    load_assets(game, "assets/bearded_man-1x.png");
+                     WIDTH, HEIGHT, false, 10);
+    load_assets(game, "assets/llama.png", "llama");
     while (is_active(game)) {
         start = SDL_GetTicks();
         handle_events(game);
