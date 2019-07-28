@@ -29,7 +29,7 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	gcc $(CFLAGS) $(CONFIG) -c $< -o $@
 
 test: $(BIN)
-	./$<
+	@./$<
 
 clean:
 	rm -f $(SRC_DIR)/*.o $(BIN)

@@ -9,7 +9,7 @@ bool llama_up = true;
 game_t *init_game(const char *title, int x_pos, int y_pos,
                  int width, int height, bool fullscreen, unsigned int framerate)
 {
-    int flags;
+    int wflags, rflags;
     SDL_Window *w;
     SDL_Renderer *r;
     game_t *g;
@@ -18,12 +18,13 @@ game_t *init_game(const char *title, int x_pos, int y_pos,
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) /* SDL_INIT_EVERYTHING ? */
         fail("%s (%d): failed to initialize SDL: %s", ORIGIN, SDL_GetError());
 
-    flags = SDL_WINDOW_SHOWN;
-    if (fullscreen) flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    w = SDL_CreateWindow(title, x_pos, y_pos, width, height, flags);
+    wflags = SDL_WINDOW_SHOWN;
+    if (fullscreen) wflags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    w = SDL_CreateWindow(title, x_pos, y_pos, width, height, wflags);
     if (!w) fail("%s (%d): failed to create window", ORIGIN);
 
-    r = SDL_CreateRenderer(w, -1, 0);
+    rflags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+    r = SDL_CreateRenderer(w, -1, rflags);
     if (!r) fail("%s (%d): failed to create renderer", ORIGIN);
     SDL_SetRenderDrawColor(r, 255, 255, 255, 255);
 
