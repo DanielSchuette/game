@@ -7,16 +7,14 @@
 /* FIXME: is this hashing function any good? */
 unsigned int hash(const char *s)
 {
-    int i;
-    int len;
-    unsigned int sum;
+    unsigned int i, len, h;
 
-    sum = 0;
     len = strlen(s);
+    h = 0;
     for (i = 0; i < len; i++)
-        sum += s[i];
+        h = h * 31 + s[i];
 
-    return sum % MAPSIZE;
+    return h % MAPSIZE;
 }
 
 /* init_map: initialize map points to NULL. */
